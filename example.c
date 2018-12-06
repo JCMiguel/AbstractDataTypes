@@ -25,8 +25,12 @@ int main(void) {
 	puts("¡Hola mundo!"); /* prints ¡Hola mundo! */
 
 	Stack_t stack;
-	int a, i;
+	Queue_t queue;
+	int i, offset;
 	struct tura pkg;
+
+	// ------------------------------- STACK ---------------------------------
+	puts("Example with a stack of structs");
 
 	stack = CreateStack(sizeof(pkg), 5);
 	if(stack == NULL) {
@@ -57,6 +61,42 @@ int main(void) {
 	}
 
 	FreeStack(stack);
+
+
+	// ------------------------------- QUEUE ---------------------------------
+	puts("Example with a queue of structs");
+
+	queue = CreateQueue(sizeof(pkg), 2);
+	if(queue == NULL) {
+		puts("Error...");
+		return EXIT_FAILURE;
+	}
+
+	for(offset = 0; offset < 15 ; offset+=10) {
+		for(i = 0; i< 3 ; i++) {
+			pkg.a = i +14 + offset;
+			pkg.b = '0' + i + offset;
+			pkg.c = 3.2 + i + offset;
+			if(AddToQueue(queue, &pkg) < 0 ) {
+				puts("Error al agregar elemento");
+				continue;
+			}
+			printf("Elementos agregados: %d %c %f\n", pkg.a, pkg.b, pkg.c);
+		}
+
+		pkg.a = 0;
+		pkg.b = 0;
+		pkg.c = 0;
+		for(i =0; i< 3 ; i++) {
+			if(ReadFromQueue(queue, &pkg) < 0 ) {
+				puts("Error al obtener elemento");
+				continue;
+			}
+			printf("Elementos extraidos: %d %c %f\n", pkg.a, pkg.b, pkg.c);
+		}
+
+	}
+	FreeQueue(queue);
 
 	return EXIT_SUCCESS;
 }

@@ -11,7 +11,7 @@
 #include "AbstractDataTypes.h"
 
 /*--------------------------------------------------------------------------*/
-// FUNCIONES DE PILAS, COLAS, LISTAS Y µRBOLES                              //
+// FUNCIONES DE PILAS						                                //
 /*--------------------------------------------------------------------------*/
 
 Stack_t CreateStack (unsigned long sizeOfData, unsigned long elem) {
@@ -69,116 +69,90 @@ void FreeStack (Stack_t stack){
 }
 
 
-void escribep(struct data Dato, int *Ind, struct data *Pila)
-{ if(*Ind>=MAX)
-  { printf("PILA LLENA");
-    //getch();
-    return;
-  }
-  //ingdata(&Dato);
-  Pila[*Ind]=Dato;
-  (*Ind)++;
+/*--------------------------------------------------------------------------*/
+// FUNCIONES DE COLAS						                                //
+/*--------------------------------------------------------------------------*/
+
+typedef enum {
+	EMPTY_QUEUE,
+	FREE_QUEUE,
+	FULL_QUEUE
+} StatusQueue;
+
+Queue_t CreateQueue (unsigned long sizeOfData, unsigned long elem) {
+	Queue_t ptrQueue;
+
+	ptrQueue = (Queue_t) malloc(sizeof(Queue_struct));
+	if(!ptrQueue) {
+		return NULL;
+	}
+	ptrQueue->data = calloc(elem, sizeOfData );
+	if(!(ptrQueue->data)) {
+		return NULL;
+	}
+
+	ptrQueue->readPtr = 0;
+	ptrQueue->writePtr = 0;
+	ptrQueue->maxSize = elem;
+	ptrQueue->__sizeData = sizeOfData;
+	ptrQueue->__statusQueue = EMPTY_QUEUE;
+
+	return ptrQueue;
 }
 
-int leep(struct data *Pila, int *Ind, struct data *Dato)
-{ if(!(*Ind)) //Error en el cuaderno.
-  { printf("Pila vac¡a");
-    return 0;
-  }
-  (*Ind)--;
-  *Dato=Pila[*Ind];
-  return 1;
+int AddToQueue(Queue_t queue, void *data) {
+	if(queue->__statusQueue == FULL_QUEUE) {
+		printf("COLA LLENA");
+		return -1;
+	}
+	memcpy((queue->data + ((queue->readPtr)*queue->__sizeData)), data, queue->__sizeData);
+	queue->readPtr++;
+	if(queue->readPtr >= queue->maxSize)
+		queue->readPtr = 0;
+	if(queue->readPtr == queue->writePtr)
+		queue->__statusQueue = FULL_QUEUE;
+	else
+		queue->__statusQueue = FREE_QUEUE;
+	return 0;
+
 }
 
-void escribepd(struct nodo **inicio, struct nodo *PP)
-{ ins_ppio(inicio);
-  PP=*inicio;
-  //PP=PP; //Esto solamente para que no aparezca un Warning.
+int ReadFromQueue (Queue_t queue, void * data) {
+	if(queue->__statusQueue == EMPTY_QUEUE) {
+		printf("Cola vacia");
+		return -1;
+	}
+	memcpy(data, (queue->data + ((queue->writePtr)*queue->__sizeData)), queue->__sizeData);
+	queue->writePtr++;
+	if(queue->writePtr >= queue->maxSize)
+		queue->writePtr = 0;
+	if(queue->readPtr == queue->writePtr)
+		queue->__statusQueue = EMPTY_QUEUE;
+	else
+		queue->__statusQueue = FREE_QUEUE;
+	return 0;
 }
 
-int leepd(struct nodo **inicio, struct nodo *PP, struct data *var)
-{ if(!*inicio)
-  { printf("Pila vac¡a");
-    return 0;
-  }
-  *var=(*inicio)->datos;
-  PP=*inicio;
-  *inicio=(*inicio)->sig;
-  free(PP);
-  PP=*inicio;
-  return 1;
+void FreeQueue (Queue_t queue){
+	if(queue->data != NULL) {
+		free(queue->data);
+		queue->data =NULL;
+	}
+	queue->readPtr =0;
+	queue->writePtr =0;
+	queue->maxSize = 0;
+	queue->__sizeData = 0;
+	queue->__statusQueue = EMPTY_QUEUE;
+	if(queue != NULL) {
+		free(queue);
+		queue = NULL;
+	}
 }
 
-void escribec(struct data Dato, struct data *Cola, int *Ent)
-{ if(*Ent>=MAX)
-  { printf("Cola Llena");
-    //getch();
-    return;
-  }
-  //ingdata(&Dato);
-  Cola[*Ent]=Dato;
-  (*Ent)++;
-}
+/*--------------------------------------------------------------------------*/
+// FUNCIONES DE LISTAS SIMPLES						                                //
+/*--------------------------------------------------------------------------*/
 
-int leec(struct data *Cola, int *Sal, struct data *Dato, int Ent)
-{ if(*Sal==Ent)
-  { printf("Cola vac¡a");
-    return 0;
-  }
-  *Dato=Cola[*Sal];
-  (*Sal)++;
-  return 1;
-}
-
-void escribecd(struct nodo **inicc, struct nodo **L)
-{ ins_final(inicc);
-  *L=*inicc;
-  //L=L; //Est  solamente para que no salte un Warning.
-}
-
-int leecd(struct nodo **inicc, struct nodo *L, struct data *var)
-{ if(!*inicc)
-  { printf("Cola vac¡a");
-    return 0;
-  }
-  *var=(*inicc)->datos;
-  L=*inicc;
-  *inicc=(*inicc)->sig;
-  free(L);
-  L=*inicc;
-  return 1;
-}
-
-void escribecc(struct data *cola, int *ENT, struct data Dato, int *LLE, int *VAC, int SA)
-{ if(*LLE)
-  { printf("Cola llena");
-    //getch();
-    return;
-  }
-  //ingdata(&Dato);
-  cola[*ENT]=Dato;
-  (*ENT)++;
-  *VAC=0;
-  if(*ENT==MAX)
-    *ENT=0;
-  if(*ENT==SA)
-    *LLE=1;
-}
-
-int leecc(struct data *cola, int *SAL, int ENT, int *LLE, int *VAC, struct data *Dato)
-{ if(*VAC)
-  { printf("Cola vac¡a");
-    return 0;
-  }
-  *Dato=cola[*SAL];
-  (*SAL)++;
-  *LLE=0;
-  if(*SAL==MAX)
-    *SAL=0;
-  if(*SAL==ENT)
-    *VAC=1;
-  return 1;
-}
 
 /*
 void agregar(struct nodo **Inic, struct data Dato)

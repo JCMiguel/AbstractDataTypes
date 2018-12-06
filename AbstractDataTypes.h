@@ -47,6 +47,10 @@ struct nodod
   struct nodod *ant, *sig;
 };
 
+/*--------------------------------------------------------------------------*/
+// PILAS (Stack) (Memoria LIFO)                                             //
+/*--------------------------------------------------------------------------*/
+
 typedef struct {
 	unsigned long maxSize;
 	unsigned long index;
@@ -56,43 +60,32 @@ typedef struct {
 
 typedef Stack_struct* Stack_t;
 
-/*--------------------------------------------------------------------------*/
-// PILAS (Stack) (Memoria LIFO)                                             //
-/*--------------------------------------------------------------------------*/
-
-//PILAS COMPACTAS (MEMORIA ESTµTICA) [FUNCIONA]
-void escribep (struct data, int *, struct data *);
-int leep (struct data *,int *,struct data *);
-
-//PILAS DISPERSAS
-// --- PROXIMAMENTE --- [FUNCIONA]
-void escribepd (struct nodo **, struct nodo *);
-int leepd (struct nodo **, struct nodo *, struct data *);
-
 Stack_t CreateStack (unsigned long sizeOfData, unsigned long elem);
 int AddToStack(Stack_t stack, void *data);
 int ReadFromStack (Stack_t stack, void * data);
 void FreeStack (Stack_t stack);
 
+
 /*--------------------------------------------------------------------------*/
-// COLAS (Buffer) (Memoria FIFO)                                            //
+// COLAS (Queue) (Memoria FIFO)                                            //
 /*--------------------------------------------------------------------------*/
 
-//COLAS COMPACTAS (MEMORIA ESTµTICA) [FUNCIONA]
-void escribec (struct data, struct data *, int *);
-int leec (struct data *, int *, struct data *, int);
+typedef struct {
+	unsigned long maxSize;
+	unsigned long readPtr;
+	unsigned long writePtr;
+	unsigned long __sizeData;
+	unsigned char __statusQueue;
+	unsigned char * data;
+} Queue_struct;
 
-//COLAS DISPERSAS [FUNCIONA]
-// --- PR‡XIMAMENTE ---
-void escribecd (struct nodo **, struct nodo **);
-int leecd (struct nodo **, struct nodo *, struct data *);
+typedef Queue_struct* Queue_t;
 
-//COLA CIRCULAR COMPACTA (MEMORIA ESTµTICA) [FUNCIONA]
-void escribecc (struct data *, int *, struct data, int *, int *, int);
-int leecc (struct data *, int *, int, int *, int *, struct data *);
+Queue_t CreateQueue (unsigned long sizeOfData, unsigned long elem);
+int AddToQueue(Queue_t queue, void *data);
+int ReadFromQueue (Queue_t queue, void * data);
+void FreeQueue (Queue_t queue);
 
-//COLA CIRCULAR DISPERSA
-// --- PR‡XIMAMENTE ---
 
 /*--------------------------------------------------------------------------*/
 // LISTAS                                                                   //
